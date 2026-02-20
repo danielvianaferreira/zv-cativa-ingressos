@@ -6,16 +6,13 @@ google_credentials.json
 node_modules/
 package-lock.json
 
-# Netlify
-.netlify/
+# AWS
+.aws/
 
 # Python (dev local)
 .venv/
 __pycache__/
 
-# Pasta api/ antiga (substituída por netlify/functions/)
-api/
-
-# Vercel (não usado mais)
+# Vercel (não usado)
 vercel.json
 .vercel/

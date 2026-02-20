@@ -1,6 +1,6 @@
 /**
- * Servidor de desenvolvimento local — ZV Cativa
- * Uso: node server.js
+ * server.js — ZV Cativa Ingressos
+ * Uso: node server.js  (dev: porta 3000, produção: PORT env)
  * Acesse: http://localhost:3000
  */
 
@@ -23,11 +23,11 @@ const http = require('http');
 const fs   = require('fs');
 const path = require('path');
 
-const PORT = 3000;
+const PORT = parseInt(process.env.PORT || '3000', 10);
 const ROOT = __dirname;
 
-// Carrega o handler da API (netlify/functions/jogos.js)
-const jogosHandler = require('./netlify/functions/jogos');
+// Carrega o handler da API
+const jogosHandler = require('./api/jogos');
 
 // MIME types para arquivos estáticos
 const MIME = {
@@ -58,19 +58,7 @@ const server = http.createServer(async (req, res) => {
 
   // ── API ────────────────────────────────────────────────────────
   if (url === '/api/jogos') {
-    // Adapta evento Netlify para o handler
-    const mockEvent = { httpMethod: req.method };
-    try {
-      const result = await jogosHandler.handler(mockEvent);
-      res.writeHead(result.statusCode, {
-        'Content-Type': 'application/json',
-        ...(result.headers || {}),
-      });
-      res.end(result.body || '');
-    } catch (e) {
-      res.writeHead(500, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ error: e.message }));
-    }
+    await jogosHandler(req, res);
     return;
   }
 
@@ -94,6 +82,6 @@ const server = http.createServer(async (req, res) => {
   });
 });
 
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
   console.log(`\n✅  ZV Cativa rodando em http://localhost:${PORT}\n`);
 });

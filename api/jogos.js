@@ -1,3 +1,7 @@
+/**
+ * api/jogos.js — Handler da planilha Google Sheets
+ * Usado pelo server.js (interface Node.js http: req, res)
+ */
 const { google } = require('googleapis');
 
 const SPREADSHEET_ID =
@@ -12,17 +16,22 @@ const CORS_HEADERS = {
 
 // ── Auth ──────────────────────────────────────────────────────────
 function getAuth() {
-  // Produção (Netlify): variável de ambiente com o JSON completo
   if (process.env.GOOGLE_CREDENTIALS_JSON) {
-    const credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
+    let credentials;
+    try {
+      credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS_JSON);
+    } catch (e) {
+      throw new Error('GOOGLE_CREDENTIALS_JSON inválido — verifique o JSON nas variáveis de ambiente.');
+    }
     return new google.auth.GoogleAuth({
       credentials,
       scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
     });
   }
   // Local: arquivo de credenciais
+  const keyFile = process.env.GOOGLE_CREDENTIALS_PATH || './google_credentials.json';
   return new google.auth.GoogleAuth({
-    keyFile: process.env.GOOGLE_CREDENTIALS_PATH || './google_credentials.json',
+    keyFile,
     scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly'],
   });
 }
@@ -44,10 +53,14 @@ function applyMarkup(cost) {
   return Math.ceil(cost * MARKUP);
 }
 
-// ── Handler Netlify ───────────────────────────────────────────────
-exports.handler = async (event) => {
-  if (event.httpMethod === 'OPTIONS') {
-    return { statusCode: 200, headers: CORS_HEADERS, body: '' };
+// ── Handler (Node.js HTTP interface) ─────────────────────────────
+module.exports = async function jogosHandler(req, res) {
+  Object.entries(CORS_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
+
+  if (req.method === 'OPTIONS') {
+    res.writeHead(200);
+    res.end('');
+    return;
   }
 
   try {
@@ -58,7 +71,7 @@ exports.handler = async (event) => {
       spreadsheetId: SPREADSHEET_ID,
       // A=Tipo B=Evento C=Data D=Competição E=Disp F=Vendidos
       // G=Ingresso H=Obs I=Ingresso+Club J=Transfer+Ingresso K=Transfer+Ingresso+Club
-      range: 'A1:K200',
+      range: 'Página1!A1:K200',
     });
 
     const rows = response.data.values || [];
@@ -66,7 +79,6 @@ exports.handler = async (event) => {
     const jogos = rows
       .slice(1)
       .map((row, idx) => {
-        const tipo        = (row[0] || '').trim();
         const evento      = (row[1] || '').trim();
         const data        = (row[2] || '').trim();
         const competicao  = (row[3] || '').trim();
@@ -85,7 +97,6 @@ exports.handler = async (event) => {
 
         return {
           id: idx + 1,
-          tipo,
           evento,
           data,
           competicao,
@@ -104,20 +115,14 @@ exports.handler = async (event) => {
         return Object.values(j.precos).some(p => p !== null);
       });
 
-    return {
-      statusCode: 200,
-      headers: {
-        ...CORS_HEADERS,
-        'Cache-Control': 's-maxage=120, stale-while-revalidate',
-      },
-      body: JSON.stringify({ jogos }),
-    };
+    res.writeHead(200, {
+      ...CORS_HEADERS,
+      'Cache-Control': 'max-age=120',
+    });
+    res.end(JSON.stringify({ jogos }));
   } catch (err) {
     console.error('[jogos] erro:', err.message);
-    return {
-      statusCode: 500,
-      headers: CORS_HEADERS,
-      body: JSON.stringify({ error: 'Erro ao carregar dados da planilha.' }),
-    };
+    res.writeHead(500, CORS_HEADERS);
+    res.end(JSON.stringify({ error: 'Erro ao carregar dados da planilha.' }));
   }
 };
