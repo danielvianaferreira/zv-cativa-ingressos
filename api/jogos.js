@@ -14,6 +14,10 @@ const CORS_HEADERS = {
   'Content-Type': 'application/json',
 };
 
+// ── Cache em memória (30 s) ───────────────────────────────────────
+const CACHE_TTL = 30 * 1000; // 30 segundos
+let cache = { data: null, expiresAt: 0 };
+
 // ── Auth ──────────────────────────────────────────────────────────
 function getAuth() {
   if (process.env.GOOGLE_CREDENTIALS_JSON) {
@@ -60,6 +64,13 @@ module.exports = async function jogosHandler(req, res) {
   if (req.method === 'OPTIONS') {
     res.writeHead(200);
     res.end('');
+    return;
+  }
+
+  // Serve do cache se ainda válido
+  if (cache.data && Date.now() < cache.expiresAt) {
+    res.writeHead(200, { ...CORS_HEADERS, 'Cache-Control': 'max-age=30', 'X-Cache': 'HIT' });
+    res.end(cache.data);
     return;
   }
 
@@ -115,11 +126,11 @@ module.exports = async function jogosHandler(req, res) {
         return Object.values(j.precos).some(p => p !== null);
       });
 
-    res.writeHead(200, {
-      ...CORS_HEADERS,
-      'Cache-Control': 'max-age=120',
-    });
-    res.end(JSON.stringify({ jogos }));
+    const body = JSON.stringify({ jogos });
+    cache = { data: body, expiresAt: Date.now() + CACHE_TTL };
+
+    res.writeHead(200, { ...CORS_HEADERS, 'Cache-Control': 'max-age=30', 'X-Cache': 'MISS' });
+    res.end(body);
   } catch (err) {
     console.error('[jogos] erro:', err.message);
     res.writeHead(500, CORS_HEADERS);
