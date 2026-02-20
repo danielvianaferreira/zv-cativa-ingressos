@@ -141,7 +141,16 @@ function renderCard(jogo) {
 // ── Filtros ───────────────────────────────────────────────────────
 function renderFilters(jogos) {
   const bar = document.getElementById('filterBar');
-  const competicoes = [...new Set(jogos.map(j => j.competicao).filter(Boolean))];
+
+  // Apenas competições com pelo menos 1 jogo disponível (não esgotado)
+  const disponiveis = jogos.filter(j => !(j.estoque !== null && j.estoque <= 0));
+  const competicoes = [...new Set(disponiveis.map(j => j.competicao).filter(Boolean))];
+
+  // Esconde o filtro "Todos" se só há uma competição disponível
+  if (competicoes.length <= 1) {
+    bar.style.display = 'none';
+    return;
+  }
 
   competicoes.forEach(comp => {
     const btn = document.createElement('button');
