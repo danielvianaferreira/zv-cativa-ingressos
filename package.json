@@ -1,0 +1,12 @@
+{
+  "name": "zv-cativa-ingressos",
+  "version": "1.0.0",
+  "description": "Vitrine de ingressos ZV Cativa - Maracanã",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "googleapis": "^144.0.0"
+  }
+}

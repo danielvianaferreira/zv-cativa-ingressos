@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZV Cativa — Ingressos no Maracanã</title>
+  <meta name="description" content="Ingressos para os melhores jogos no Maracanã. Flamengo, Fluminense e muito mais. Pacotes completos com transfer e Maracanã Club. ZV Cativa." />
+
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="shortcut icon" href="assets/favicon.svg" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ═══ HEADER ════════════════════════════════════════════════════════════ -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="logo-area">
+        <img src="assets/logo-zv.png" alt="ZV Eventos" class="logo" />
+      </div>
+      <a
+        href="https://wa.me/5521973205926?text=Olá!%20Gostaria%20de%20saber%20mais%20sobre%20os%20ingressos."
+        target="_blank"
+        class="btn-whatsapp-header"
+      >
+        <i class="fa-brands fa-whatsapp"></i> Fale Conosco
+      </a>
+    </div>
+  </header>
+
+  <!-- ═══ HERO ══════════════════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="container hero-inner">
+      <div class="hero-eyebrow">ZV Cativa &mdash; Ingressos no Maracanã</div>
+      <div class="hero-badge">🔥 Ingressos Disponíveis</div>
+      <h1 class="hero-title">A sua experiência<br /><span class="hero-accent">no Maracanã</span></h1>
+      <p class="hero-desc">
+        Ingressos para os maiores jogos do Rio. Pacotes com transfer e Maracanã Club.<br />
+        Escolha o jogo, clique no pacote e finalize pelo WhatsApp.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══ FILTROS ═══════════════════════════════════════════════════════════ -->
+  <section class="filter-section">
+    <div class="container">
+      <div class="filter-bar" id="filterBar">
+        <button class="filter-btn active" data-filter="todos">Todos</button>
+        <!-- Botões de competição injetados pelo JS -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ GRID DE JOGOS ═════════════════════════════════════════════════════ -->
+  <main class="main-content">
+    <div class="container">
+
+      <!-- Estado de loading -->
+      <div id="loadingState" class="loading-grid">
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+        <div class="skeleton-card"></div>
+      </div>
+
+      <!-- Estado de erro -->
+      <div id="errorState" class="error-state" hidden>
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <p>Não foi possível carregar os jogos. <br />Tente novamente ou entre em contato pelo WhatsApp.</p>
+        <a href="https://wa.me/5521973205926" target="_blank" class="btn-primary">
+          <i class="fa-brands fa-whatsapp"></i> Falar com a ZV
+        </a>
+      </div>
+
+      <!-- Grid de cards (injetado pelo JS) -->
+      <div id="jogosGrid" class="jogos-grid" hidden></div>
+
+      <!-- Sem resultados -->
+      <div id="emptyState" class="empty-state" hidden>
+        <i class="fa-solid fa-calendar-xmark"></i>
+        <p>Nenhum jogo encontrado nessa competição.</p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ═══ PACOTES INFO ═══════════════════════════════════════════════════════ -->
+  <section class="packages-info">
+    <div class="container">
+      <h2 class="section-title">Nossos Pacotes</h2>
+      <div class="packages-grid">
+        <div class="package-card">
+          <div class="package-icon"><i class="fa-solid fa-ticket"></i></div>
+          <h3>Somente Ingresso</h3>
+          <p>Ingresso para o jogo no Maracanã com suporte completo da ZV Cativa.</p>
+        </div>
+        <div class="package-card">
+          <div class="package-icon"><i class="fa-solid fa-star"></i></div>
+          <h3>Ingresso + Maracanã Club</h3>
+          <p>Ingresso premium com acesso ao Maracanã Club — experiência VIP no estádio.</p>
+        </div>
+        <div class="package-card">
+          <div class="package-icon"><i class="fa-solid fa-van-shuttle"></i></div>
+          <h3>Transfer + Ingresso</h3>
+          <p>Transfer confortável de ida e volta + ingresso para o jogo.</p>
+        </div>
+        <div class="package-card featured">
+          <div class="package-badge">Mais Completo</div>
+          <div class="package-icon"><i class="fa-solid fa-crown"></i></div>
+          <h3>Transfer + Ingresso + Club</h3>
+          <p>A experiência completa: transfer, acesso VIP ao Maracanã Club e ingresso.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ FOOTER ═════════════════════════════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <img src="assets/logo-zv.png" alt="ZV Eventos" class="footer-logo" />
+        <p>Experiências esportivas exclusivas no Rio de Janeiro.</p>
+        <div class="footer-social">
+          <a href="https://www.instagram.com/zezeviagens" target="_blank" aria-label="Instagram">
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+          <a href="https://www.facebook.com/zezeviagens" target="_blank" aria-label="Facebook">
+            <i class="fa-brands fa-facebook"></i>
+          </a>
+          <a href="https://wa.me/5521973205926" target="_blank" aria-label="WhatsApp">
+            <i class="fa-brands fa-whatsapp"></i>
+          </a>
+        </div>
+      </div>
+      <div class="footer-contact">
+        <h4>Central de Vendas</h4>
+        <a href="https://wa.me/5521973205926" target="_blank">
+          <i class="fa-brands fa-whatsapp"></i> (21) 97320-5926
+        </a>
+        <p>Rua Barata Ribeiro, 473 – Sala 610<br />Copacabana – RJ</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 ZV Eventos · Todos os direitos reservados</p>
+    </div>
+  </footer>
+
+  <!-- ═══ BOTÃO FLUTUANTE WHATSAPP ══════════════════════════════════════════ -->
+  <a
+    href="https://wa.me/5521973205926?text=Olá!%20Estou%20no%20site%20da%20ZV%20Cativa%20e%20gostaria%20de%20saber%20mais%20sobre%20os%20ingressos."
+    target="_blank"
+    class="whatsapp-float"
+    aria-label="Contato WhatsApp"
+  >
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+
+  <script src="main.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+# Credenciais — nunca subir ao GitHub
+google_credentials.json
+.env
+
+# Node
+node_modules/
+package-lock.json
+
+# Netlify
+.netlify/
+
+# Python (dev local)
+.venv/
+__pycache__/
+
+# Pasta api/ antiga (substituída por netlify/functions/)
+api/
+
+# Vercel (não usado mais)
+vercel.json
+.vercel/
